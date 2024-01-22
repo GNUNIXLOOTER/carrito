@@ -21,8 +21,6 @@ function cargarEventListeners() {
 }
 
 
-
-
 // Funciones
 // Función que añade el curso al carrito
 function agregarCurso(e) {
@@ -46,17 +44,21 @@ function leerDatosCurso(curso) {
      }
 
 
+     //revisa si un articulo ya existe en el carrito
      if( articulosCarrito.some( curso => curso.id === infoCurso.id ) ) { 
+          // .map itera sobre todos los articulos del carrito y el array se le asigna a la variable cursos
           const cursos = articulosCarrito.map( curso => {
                if( curso.id === infoCurso.id ) {
                     curso.cantidad++;
-                     return curso;
+                     return curso; //retorna el objeto actualizado
                 } else {
-                     return curso;
+                     return curso; //retorna los objetos que no son los duplicados
              }
           })
+          //esto le asigna una copia de los cursos a la variable articulosCarrito con el spreadoperator
           articulosCarrito = [...cursos];
      }  else {
+          //agregar el elemento al carrito
           articulosCarrito = [...articulosCarrito, infoCurso];
      }
 
@@ -71,11 +73,14 @@ function leerDatosCurso(curso) {
 // Elimina el curso del carrito en el DOM
 function eliminarCurso(e) {
      e.preventDefault();
+
+     //se utiliza delegation
      if(e.target.classList.contains('borrar-curso') ) {
           // e.target.parentElement.parentElement.remove();
           const cursoId = e.target.getAttribute('data-id')
           
-          // Eliminar del arreglo del carrito
+          // Eliminar del arreglo del carrito el curso donde curso.id es diferente del cursoId
+          // que queremos eliminar
           articulosCarrito = articulosCarrito.filter(curso => curso.id !== cursoId);
 
           carritoHTML();
@@ -89,16 +94,18 @@ function carritoHTML() {
      vaciarCarrito();
 
      articulosCarrito.forEach(curso => {
+          //esto se llama distrunturing es codigo mas limpio
+          const {imagen, titulo, precio, cantidad, id} = curso;
           const row = document.createElement('tr');
           row.innerHTML = `
                <td>  
-                    <img src="${curso.imagen}" width=100>
+                    <img src="${imagen}" width=100>
                </td>
-               <td>${curso.titulo}</td>
-               <td>${curso.precio}</td>
-               <td>${curso.cantidad} </td>
+               <td>${titulo}</td>
+               <td>${precio}</td>
+               <td>${cantidad} </td>
                <td>
-                    <a href="#" class="borrar-curso" data-id="${curso.id}">X</a>
+                    <a href="#" class="borrar-curso" data-id="${id}">X</a>
                </td>
           `;
           contenedorCarrito.appendChild(row);
